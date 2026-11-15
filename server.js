@@ -7,6 +7,7 @@ import { DatabaseSync } from 'node:sqlite';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PORT = Number(process.env.PORT || 3220);
+const HOST = process.env.HOST || '127.0.0.1';
 const DB_PATH = process.env.DB_PATH || path.join(__dirname, 'burgermeter.db');
 const RETAILERS = ['Walmart', 'Target', 'Kroger', 'Amazon'];
 const ZXING_URL = 'https://cdn.jsdelivr.net/npm/@zxing/browser@0.1.5/umd/zxing-browser.min.js';
@@ -402,6 +403,6 @@ const server = http.createServer(async (req, res) => {
 });
 
 if (process.env.NODE_ENV !== 'test') {
-  server.listen(PORT, () => console.log(`BurgerMeter listening on ${PORT} products=${products.length} otc=${allOtc.length} avgMargin=${avgMargin.toFixed(1)} startupCheck=${JSON.stringify(startupCheck)}`));
+  server.listen(PORT, HOST, () => console.log(`BurgerMeter listening on ${HOST}:${PORT} products=${products.length} otc=${allOtc.length} avgMargin=${avgMargin.toFixed(1)} startupCheck=${JSON.stringify(startupCheck)}`));
 }
 export { server };
