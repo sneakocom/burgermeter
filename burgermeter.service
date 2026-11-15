@@ -9,6 +9,10 @@ WorkingDirectory=/home/deploy/apps/burgermeter
 ExecStart=/usr/bin/node server.js
 Environment=PORT=3220
 Restart=on-failure
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ReadWritePaths=/home/deploy/apps/burgermeter
 
 [Install]
 WantedBy=multi-user.target
