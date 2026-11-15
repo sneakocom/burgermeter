@@ -1,0 +1,14 @@
+{
+  "description": "BurgerMeter - What it costs to make vs what you pay.",
+  "engines": {
+    "node": ">=22"
+  },
+  "name": "burgermeter",
+  "private": true,
+  "scripts": {
+    "start": "node server.js",
+    "test": "node --test test/app.test.mjs"
+  },
+  "type": "module",
+  "version": "1.0.0"
+}

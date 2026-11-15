@@ -1,0 +1,14 @@
+{
+  "1": [
+    { "retailer": "Walmart", "price": 7.45, "checkedAt": "2026-11-02", "sourceLabel": "Walmart screenshot", "sourceUrl": null }
+  ],
+  "2": [
+    { "retailer": "Walmart", "price": 3.97, "checkedAt": "2026-11-02", "sourceLabel": "Walmart screenshot", "sourceUrl": null }
+  ],
+  "3": [
+    { "retailer": "Walmart", "price": 7.92, "checkedAt": "2026-11-02", "sourceLabel": "Walmart screenshot", "sourceUrl": null }
+  ],
+  "4": [
+    { "retailer": "Walmart", "price": 2.48, "checkedAt": "2026-11-02", "sourceLabel": "Walmart screenshot", "sourceUrl": null }
+  ]
+}

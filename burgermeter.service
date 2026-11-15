@@ -1,0 +1,14 @@
+[Unit]
+Description=BurgerMeter
+After=network.target
+
+[Service]
+Type=simple
+User=deploy
+WorkingDirectory=/home/deploy/apps/burgermeter
+ExecStart=/usr/bin/node server.js
+Environment=PORT=3220
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
