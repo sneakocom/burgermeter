@@ -45,6 +45,11 @@ Health check: `GET /healthz` returns
 - `/watchlist` Register, sign in, sign out (scrypt password hashes,
   httpOnly session cookie), a watchlist, and in-app alerts.
 - `/methodology` How the numbers work.
+- `/blog` Blog index, newest first, and `/blog/:slug` post pages. Posts
+  are `.mjs` files in `blog/`, one file per post, each default-exporting
+  `{ slug, title, date, excerpt, body }` (body is an HTML string). The
+  server loads them at startup, so adding a post is adding a file and
+  restarting. `/sitemap.xml` is generated from the same list.
 - APIs: `/api/lookup?upc=`, `/api/otc-search?q=`, `/api/me`,
   `/api/register`, `/api/signin`, `/api/signout`, `/api/watch`,
   `/api/watchlist`, `/api/notifications`.

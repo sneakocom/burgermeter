@@ -42,3 +42,27 @@ test('home contains hero stat', async () => {
   const text = await (await fetch(base + '/')).text();
   assert.match(text, /What does it cost to make\?/); assert.match(text, /10,727/);
 });
+test('blog index lists the seed post', async () => {
+  const res = await fetch(base + '/blog');
+  assert.equal(res.status, 200);
+  const text = await res.text();
+  assert.match(text, /Every product has two prices/); assert.match(text, /href="\/blog\/two-prices"/);
+});
+test('blog post page renders catalog figures', async () => {
+  const res = await fetch(base + '/blog/two-prices');
+  assert.equal(res.status, 200);
+  const text = await res.text();
+  assert.match(text, /91\.2% margin/); assert.match(text, /\$0\.35/); assert.match(text, /\$3\.99/);
+  assert.match(text, /79\.8% margin/); assert.match(text, /72\.9% margin/);
+  assert.match(text, /November 15, 2026/);
+});
+test('unknown blog slug is 404', async () => {
+  const res = await fetch(base + '/blog/no-such-post');
+  assert.equal(res.status, 404);
+});
+test('sitemap includes blog urls', async () => {
+  const res = await fetch(base + '/sitemap.xml');
+  assert.equal(res.status, 200);
+  const text = await res.text();
+  assert.match(text, /https:\/\/burgermeter\.com\/blog<\/loc>/); assert.match(text, /https:\/\/burgermeter\.com\/blog\/two-prices/);
+});

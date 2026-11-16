@@ -21,4 +21,5 @@ main{max-width:1180px;margin:0 auto;padding:1rem}.site-footer{max-width:1180px;m
 .chips{display:flex;gap:.5rem;flex-wrap:wrap;margin:1rem 0}.chip{border:1px solid var(--border);background:var(--surface);border-radius:999px;padding:.4rem .9rem;cursor:pointer;font-weight:600}.chip.active{background:var(--lime)}
 .auth-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}@media(max-width:700px){.auth-grid{grid-template-columns:1fr}}
 label{display:block;margin:.6rem 0}form.inline{display:inline}.center{text-align:center;margin:1rem}.alerts li{margin:.4rem 0}mark{background:var(--lime)}
+.post{max-width:720px;line-height:1.65}.post h2{margin:1.8rem 0 .4rem}.post p{margin:.6rem 0}.post .nums{margin:.4rem 0 .2rem}
 @media(max-width:700px){.otc-table thead{display:none}.otc-table tr{display:block;border-bottom:2px solid var(--border)}.otc-table td{display:block;border-bottom:none}.otc-table td::before{content:attr(data-label);font-weight:800;display:block;color:var(--muted);font-size:.75rem;text-transform:uppercase}}

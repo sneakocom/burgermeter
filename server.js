@@ -2,7 +2,7 @@ import http from 'node:http';
 import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 import { DatabaseSync } from 'node:sqlite';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -24,6 +24,20 @@ const retailerPricesRaw = JSON.parse(fs.readFileSync(path.join(__dirname, 'data'
 const categories = [...new Set(products.map((p) => p.category))].sort();
 const avgMargin = products.reduce((s, p) => s + (p.retail ? ((p.retail - p.cogs) / p.retail) * 100 : 0), 0) / products.length;
 const allOtc = identicals.groups.flatMap((g) => g.products);
+
+// ---------- Blog ----------
+// One .mjs file per post in blog/, each default-exporting
+// { slug, title, date (YYYY-MM-DD), excerpt, body (HTML string) }.
+// Loaded at startup and listed newest first. See blog/ for an example.
+const blogDir = path.join(__dirname, 'blog');
+let posts = [];
+if (fs.existsSync(blogDir)) {
+  const files = fs.readdirSync(blogDir).filter((f) => f.endsWith('.mjs')).sort();
+  posts = (await Promise.all(files.map(async (f) => (await import(pathToFileURL(path.join(blogDir, f)).href)).default)))
+    .sort((a, b) => b.date.localeCompare(a.date));
+}
+const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+function fmtDate(iso) { const [y, m, d] = String(iso).split('-').map(Number); return `${MONTHS[m - 1]} ${d}, ${y}`; }
 
 // ---------- DB ----------
 const db = new DatabaseSync(DB_PATH);
@@ -174,7 +188,7 @@ function layout(req, title, content) {
     ? `<span class="acct">${esc(user.email)}</span><form method="post" action="/signout" class="inline"><button class="pill-btn" type="submit">Sign out</button></form>`
     : `<a class="pill-btn" href="/watchlist">Sign in / Register</a>`;
   return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${esc(title)} · BurgerMeter</title><link rel="stylesheet" href="/style.css"></head><body>
-<header class="site-header"><a class="brand" href="/"><span class="logo">↗</span><span>BurgerMeter</span></a><nav><a href="/">Catalog</a><a href="/identicals">Identicals</a><a href="/watchlist">Watchlist</a><a href="/methodology">Methodology</a></nav><div class="account">${account}</div></header>
+<header class="site-header"><a class="brand" href="/"><span class="logo">↗</span><span>BurgerMeter</span></a><nav><a href="/">Catalog</a><a href="/identicals">Identicals</a><a href="/blog">Blog</a><a href="/watchlist">Watchlist</a><a href="/methodology">Methodology</a></nav><div class="account">${account}</div></header>
 <main>${content}</main>
 <footer class="site-footer"><span>BurgerMeter</span><a href="/methodology">How the numbers work</a></footer>
 <script src="/app.js"></script></body></html>`;
@@ -314,6 +328,40 @@ function methodologyPage(req) {
   return layout(req, 'How the numbers work', content);
 }
 
+function blogIndexPage(req) {
+  const cards = posts.map((p) => `<article class="card">
+    <span class="eyebrow">${esc(fmtDate(p.date))}</span>
+    <h3><a href="/blog/${esc(p.slug)}">${esc(p.title)}</a></h3>
+    <p class="detail">${esc(p.excerpt)}</p>
+  </article>`).join('');
+  const content = `<p class="eyebrow">BURGERMETER BLOG</p><h1>Notes on what things cost</h1>
+  <section class="grid">${cards || '<p class="muted">No posts yet.</p>'}</section>`;
+  return layout(req, 'Blog', content);
+}
+
+function blogPostPage(req, slug) {
+  const p = posts.find((x) => x.slug === slug);
+  if (!p) return null;
+  const content = `<p><a href="/blog">← Back to blog</a></p>
+  <p class="eyebrow">${esc(fmtDate(p.date))}</p><h1>${esc(p.title)}</h1>
+  <article class="post">${p.body}</article>`;
+  return layout(req, p.title, content);
+}
+
+function sitemapXml() {
+  const base = 'https://burgermeter.com';
+  const urls = [
+    { loc: `${base}/` },
+    { loc: `${base}/identicals` },
+    { loc: `${base}/blog` },
+    { loc: `${base}/watchlist` },
+    { loc: `${base}/methodology` },
+    ...posts.map((p) => ({ loc: `${base}/blog/${p.slug}`, lastmod: p.date })),
+  ];
+  const body = urls.map((u) => `  <url><loc>${u.loc}</loc>${u.lastmod ? `<lastmod>${u.lastmod}</lastmod>` : ''}</url>`).join('\n');
+  return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${body}\n</urlset>\n`;
+}
+
 // ---------- Server ----------
 const server = http.createServer(async (req, res) => {
   try {
@@ -394,6 +442,10 @@ const server = http.createServer(async (req, res) => {
     const prodMatch = pathname.match(/^\/product\/(\d+)$/);
     if (prodMatch) { const pageHtml = productPage(req, parseInt(prodMatch[1], 10)); if (!pageHtml) { res.writeHead(404); return res.end('Not found'); } return html(res, 200, pageHtml); }
     if (pathname === '/identicals') return html(res, 200, identicalsPage(req));
+    if (pathname === '/blog') return html(res, 200, blogIndexPage(req));
+    const blogMatch = pathname.match(/^\/blog\/([a-z0-9-]+)$/);
+    if (blogMatch) { const pageHtml = blogPostPage(req, blogMatch[1]); if (!pageHtml) { res.writeHead(404); return res.end('Not found'); } return html(res, 200, pageHtml); }
+    if (pathname === '/sitemap.xml') { res.writeHead(200, { 'Content-Type': 'application/xml' }); return res.end(sitemapXml()); }
     if (pathname === '/watchlist') return html(res, 200, watchlistPage(req));
     if (pathname === '/methodology') return html(res, 200, methodologyPage(req));
     res.writeHead(404, { 'Content-Type': 'text/plain' }); return res.end('Not found');
