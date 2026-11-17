@@ -187,7 +187,7 @@ function layout(req, title, content) {
   const account = user
     ? `<span class="acct">${esc(user.email)}</span><form method="post" action="/signout" class="inline"><button class="pill-btn" type="submit">Sign out</button></form>`
     : `<a class="pill-btn" href="/watchlist">Sign in / Register</a>`;
-  return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${esc(title)} · BurgerMeter</title><link rel="stylesheet" href="/style.css"></head><body>
+  return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="impact-site-verification" content="e3109a85-fb43-48da-9cfe-75c567236134"><title>${esc(title)} · BurgerMeter</title><link rel="stylesheet" href="/style.css"></head><body>
 <header class="site-header"><a class="brand" href="/"><span class="logo">↗</span><span>BurgerMeter</span></a><nav><a href="/">Catalog</a><a href="/identicals">Identicals</a><a href="/blog">Blog</a><a href="/watchlist">Watchlist</a><a href="/methodology">Methodology</a></nav><div class="account">${account}</div></header>
 <main>${content}</main>
 <footer class="site-footer"><span>BurgerMeter</span><a href="/methodology">How the numbers work</a></footer>
