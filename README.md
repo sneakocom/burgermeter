@@ -4,7 +4,7 @@ What it costs to make vs what you pay.
 
 BurgerMeter is a pricing-transparency catalog. It compares a theorized
 manufacturing COGS (cost of goods sold) against the retail price for
-10,727 products, and it groups over-the-counter medicines with the same
+5,385 products, and it groups over-the-counter medicines with the same
 active ingredients and strength in the Identicals section.
 
 Live brand home (deployment is handled separately): burgermeter.com
@@ -28,7 +28,7 @@ npm test
 ```
 
 Health check: `GET /healthz` returns
-`{"ok":true,"products":10727,"otcProducts":49}`.
+`{"ok":true,"products":5385,"otcProducts":49}`.
 
 ## What is in the app
 
@@ -60,7 +60,7 @@ PORT=3220).
 
 ## Data sources and honesty rules
 
-- `data/products.json` — the 10,727-product catalog ported from the
+- `data/products.json` — the 5,385-product catalog ported from the
   COGS Account Prototype. Each product has a theorized COGS split into
   three buckets (ingredients or parts, packaging, labor), a retail
   price, and a price history. Product ids are assigned by array order

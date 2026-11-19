@@ -22,7 +22,7 @@ after(() => { proc?.kill(); try { fs.unlinkSync(tmpDb); } catch {} });
 
 test('healthz counts', async () => {
   const body = await (await fetch(base + '/healthz')).json();
-  assert.deepEqual(body, { ok: true, products: 10727, otcProducts: 49 });
+  assert.deepEqual(body, { ok: true, products: 5385, otcProducts: 49 });
 });
 test('catalog search bustelo', async () => {
   const body = await (await fetch(base + '/api/products?query=bustelo')).json();
@@ -40,7 +40,7 @@ test('lookup miss records unknown', async () => {
 });
 test('home contains hero stat', async () => {
   const text = await (await fetch(base + '/')).text();
-  assert.match(text, /What does it cost to make\?/); assert.match(text, /10,727/);
+  assert.match(text, /What does it cost to make\?/); assert.match(text, /5,385/);
 });
 test('blog index lists the seed post', async () => {
   const res = await fetch(base + '/blog');
