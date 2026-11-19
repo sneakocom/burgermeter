@@ -257,7 +257,7 @@ function productPage(req, id) {
   <div class="detail-nums"><div><span class="lbl">ESTIMATED COGS</span><strong>${money(p.cogs)}</strong></div><div><span class="lbl">RETAIL</span><strong>${money(p.retail)}</strong></div><div><span class="lbl">MARGIN</span><strong class="huge">${m.toFixed(1)}%</strong></div></div>
   <p>Retail is ${(p.cogs ? (p.retail / p.cogs + 1e-9) : 0).toFixed(2)}x the estimated cost to make one unit.</p>
   <h2>Cost breakdown</h2>${splitBar(p)}${breakdownRows}<div class="leader total"><span>Total COGS</span><span class="dots"></span><span>${money(p.cogs)}</span></div><div class="leader total"><span>Retail</span><span class="dots"></span><span>${money(p.retail)}</span></div>
-  <h2>Retailer prices</h2>${savingsVsHighest !== null ? `<p class="saving">You save ${money(savingsVsHighest)} vs the highest</p>` : ''}<div class="table-wrap"><table><thead><tr><th>Retailer</th><th>Price</th><th>Checked</th><th>Source</th></tr></thead><tbody>${gridRows}</tbody></table></div>
+  <h2>Retailer prices</h2>${p.walmartUrl ? `<p><a href="${esc(p.walmartUrl)}" rel="noopener">See it at Walmart</a> <span class="muted">Sold and shipped by Walmart.com. Link verified 2026-11-19.</span></p>` : ''}${savingsVsHighest !== null ? `<p class="saving">You save ${money(savingsVsHighest)} vs the highest</p>` : ''}<div class="table-wrap"><table><thead><tr><th>Retailer</th><th>Price</th><th>Checked</th><th>Source</th></tr></thead><tbody>${gridRows}</tbody></table></div>
   <h2>Price history</h2>${chart}
   <p><button class="pill-btn watch-btn" data-watch="${p.id}">${watched ? 'Watching ✓' : 'Watch'}</button> <span class="muted">Track this product for price change alerts.</span></p>
   <script>window.__BM_SIGNED_IN__=${user ? 'true' : 'false'};</script>`;
